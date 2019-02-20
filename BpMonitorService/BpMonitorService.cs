@@ -4,9 +4,12 @@ using System.ComponentModel;
 using System.Configuration;
 using System.Data;
 using System.Diagnostics;
+using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.ServiceProcess;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace BpMonitorService
@@ -35,6 +38,10 @@ namespace BpMonitorService
         readonly System.Timers.Timer timeDelay;
         int _count;
         public int _interval = int.Parse(ConfigurationManager.AppSettings["IntervalMilliSeconds"].ToString());
+        static string toEmail = ConfigurationManager.AppSettings["ToEmail"];
+        static string toEmailName = ConfigurationManager.AppSettings["ToEmailName"];
+        static string fromEmail = ConfigurationManager.AppSettings["FromEmail"];
+        static string fromEmailName = ConfigurationManager.AppSettings["FromEmailName"];
 
         public BpMonitorService()
         {
@@ -46,20 +53,46 @@ namespace BpMonitorService
 
         public void WorkProcess(object sender, System.Timers.ElapsedEventArgs e)
         {
-            string process = "Batch number: " + _count;
-            CheckPlaces();
+            string process = $"Batch number: {_count}";
             _count++;
-            Console.WriteLine(process);
+            
+            try
+            {
+                LogService($"{DateTime.Now}: {process}");
+                CheckPlaces();
+            }
+            catch(Exception ex)
+            {
+                Mailer m = new Mailer();
+                m.SendEmail(fromEmail, fromEmailName, $"Exception Occured in BP Monitor Service",
+                        toEmail, toEmailName, "eom", null);
+                LogService(ex.Message + ex.InnerException.StackTrace);
+
+            }
+            
+            
         }
 
         protected override void OnStart(string[] args)
         {
-            timeDelay.Enabled = true;
+            try
+            {
+                LogService($"{DateTime.Now}: Service Started.");
+                timeDelay.Enabled = true;
+            }
+            catch(Exception ex)
+            {
+                Mailer m = new Mailer();
+                m.SendEmail(fromEmail, fromEmailName, $"Exception Occured in BP Monitor Service",
+                        toEmail, toEmailName, ex.Message, null);
+                throw;
+            }
         }
     
 
         protected override void OnStop()
         {
+            LogService($"{DateTime.Now}: Service Stopped.");
             timeDelay.Enabled = false;
         }
 
@@ -74,19 +107,31 @@ namespace BpMonitorService
                     var sb = new StringBuilder();
 
                     sb.Append($"Please check {currentUrl}");
-                    sb.AppendLine();
-                    sb.Append($"Old Count: {_placesCount[place.Key]} New Count: BoplatsHelper.LatestSearchCount");
-                    var toEmail = ConfigurationManager.AppSettings["ToEmail"];
-                    var toEmailName = ConfigurationManager.AppSettings["ToEmailName"];
+                    sb.Append("<br /><br />");
+                    sb.Append($"Old Count: {_placesCount[place.Key]} <br /> New Count: {BoplatsHelper.LatestSearchCount}");
+
 
                     var mailer = new Mailer();
-                    mailer.SendEmail("boplats@noreply.com", "Boplats Monitor", $"Changes in {place.Key}'s apartment count",
-                        toEmail, toEmailName,sb.ToString());
+
+                    var isSuccessful = mailer.SendEmail(fromEmail, fromEmailName, $"Changes in {place.Key}'s apartment count",
+                        toEmail, toEmailName, null, sb.ToString());
 
                     _placesCount[place.Key] = BoplatsHelper.LatestSearchCount;
                 }
             }
         }
+
+        private void LogService(string content)
+        {
+            Thread.CurrentThread.CurrentCulture = new CultureInfo("nl-NL");
+            var fs = new FileStream($@"c:\temp\logs\BpMonitorLogs-{DateTime.Now.ToShortDateString()}.txt", FileMode.OpenOrCreate, FileAccess.Write);
+            var sw = new StreamWriter(fs);
+            sw.BaseStream.Seek(0, SeekOrigin.End);
+            sw.WriteLine(content);
+            sw.Flush();
+            sw.Close();
+        }
+
         internal void TestStartupAndStop(string[] args)
         {
             this.OnStart(args);

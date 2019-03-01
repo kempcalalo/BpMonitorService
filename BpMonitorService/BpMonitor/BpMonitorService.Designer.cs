@@ -1,4 +1,4 @@
-﻿namespace BpMonitorService
+﻿namespace BpMonitorService.BpMonitor
 {
     partial class BpMonitorService
     {

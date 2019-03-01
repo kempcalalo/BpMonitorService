@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
-using System.Threading.Tasks;
 using HtmlAgilityPack;
 
-namespace BpMonitorService
+namespace BpMonitorService.BpMonitor
 {
     public static class BoplatsHelper
     {
@@ -35,11 +32,11 @@ namespace BpMonitorService
             response.Close();
             readStream.Close();
 
-            SetLatestSearchCount(htmlString);
+            SetLatestApartmentCountAndName(htmlString);
 
         }
 
-        private static void SetLatestSearchCount(string htmlString)
+        private static void SetLatestApartmentCountAndName(string htmlString)
         {
             var htmlDoc = new HtmlDocument { OptionFixNestedTags = true };
             htmlDoc.LoadHtml(htmlString);
@@ -49,14 +46,19 @@ namespace BpMonitorService
                 return;
             }
 
-            if (htmlDoc.DocumentNode == null) return;
-            var bodyNode = htmlDoc.DocumentNode.SelectSingleNode("//body");
+            var bodyNode = htmlDoc.DocumentNode?.SelectSingleNode("//body");
 
             if (bodyNode == null) return;
+
+            //Set the latest count
             foreach (var node in bodyNode.SelectNodes("//span[@class='objectcount']"))
             {
                 LatestSearchCount = int.Parse(node.InnerText);
             }
+
+            //Set the latest name
+            LatestApartmentName = bodyNode.SelectSingleNode("//p[@class='address']")?.InnerHtml;
+
         }
 
     }

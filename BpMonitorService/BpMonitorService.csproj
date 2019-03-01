@@ -73,13 +73,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BoplatsHelper.cs" />
-    <Compile Include="BpMonitorService.cs">
+    <Compile Include="BpMonitor\ApartmentDetailsModel.cs" />
+    <Compile Include="BpMonitor\BoplatsHelper.cs" />
+    <Compile Include="BpMonitor\BpMonitorService.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="BpMonitorService.Designer.cs">
+    <Compile Include="BpMonitor\BpMonitorService.Designer.cs">
       <DependentUpon>BpMonitorService.cs</DependentUpon>
     </Compile>
+    <Compile Include="Logger.cs" />
     <Compile Include="Mailer.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="ProjectInstaller.cs">
@@ -99,5 +101,6 @@
       <DependentUpon>ProjectInstaller.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -32,6 +32,6 @@ namespace BpMonitorService.Helpers
 
         }
 
-        public static string 
+
     }
 }

@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{03F72E6B-7042-4B16-B6FB-20358D22B969}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
+    <OutputType>Exe</OutputType>
     <RootNamespace>BpMonitorService</RootNamespace>
     <AssemblyName>BpMonitorService</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
@@ -73,16 +73,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BpMonitor\ApartmentDetailsModel.cs" />
-    <Compile Include="BpMonitor\BoplatsHelper.cs" />
-    <Compile Include="BpMonitor\BpMonitorService.cs">
+    <Compile Include="Boplats\ApartmentDetailsModel.cs" />
+    <Compile Include="Boplats\BoplatsHelper.cs" />
+    <Compile Include="BostadWatchService.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="BpMonitor\BpMonitorService.Designer.cs">
-      <DependentUpon>BpMonitorService.cs</DependentUpon>
+    <Compile Include="BostadWatchService.Designer.cs">
+      <DependentUpon>BostadWatchService.cs</DependentUpon>
     </Compile>
-    <Compile Include="Logger.cs" />
-    <Compile Include="Mailer.cs" />
+    <Compile Include="Helpers\Settings.cs" />
+    <Compile Include="Helpers\Logger.cs" />
+    <Compile Include="Helpers\Mailer.cs" />
+    <Compile Include="Helpers\WebRequestHelper.cs" />
+    <Compile Include="Homeq\HomeqHelper.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="ProjectInstaller.cs">
       <SubType>Component</SubType>

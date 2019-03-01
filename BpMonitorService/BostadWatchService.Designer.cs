@@ -1,6 +1,6 @@
-﻿namespace BpMonitorService.BpMonitor
+﻿namespace BpMonitorService
 {
-    partial class BpMonitorService
+    partial class BostadWatchService
     {
         /// <summary> 
         /// Required designer variable.

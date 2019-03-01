@@ -1,11 +1,9 @@
-﻿using SendGrid;
-using SendGrid.Helpers.Mail;
-using System;
-using System.Configuration;
+﻿using System.Configuration;
 using System.Net;
-using System.Threading.Tasks;
+using SendGrid;
+using SendGrid.Helpers.Mail;
 
-namespace BpMonitorService
+namespace BpMonitorService.Helpers
 {
     public class Mailer
     {

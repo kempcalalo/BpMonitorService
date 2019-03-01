@@ -20,14 +20,14 @@ namespace BpMonitorService
                 ServiceBase[] ServicesToRun;
                 ServicesToRun = new ServiceBase[]
                 {
-                    new BpMonitor.BpMonitorService()
+                    new BostadWatchService()
                 };
                 ServiceBase.Run(ServicesToRun);
             }
             else
             {
                 string[] args = null;
-                var bpm = new BpMonitor.BpMonitorService();
+                var bpm = new BostadWatchService();
                 bpm.TestStartupAndStop(args);
             }
 
